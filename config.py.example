@@ -1,0 +1,26 @@
+#!/usr/bin/env python
+# coding=utf-8
+
+# Name of the list you would like to add movies to. Gets created if such does
+# not exist with given name
+TRAKT_LIST_NAME = 'Top 10 Pirated Movies of The Week'
+TRAKT_LIST_NAME_WATCHED = 'Top Watched Movies of The Week'
+
+# List search tags >= (more or equal)
+VOTES = 100
+YEAR = 2018
+RATING = 7
+
+# To acquire the values for following two variables, go to:
+#
+#   https://trakt.tv/oauth/applications/new
+#
+# and fill the form. For "Redirect URI" please enter
+# "urn:ietf:wg:oauth:2.0:oob" (without quotes).
+#
+# After application is created, copy-paste the "Client ID" and "Client Secret"
+# below.
+
+CLIENT_ID = ''
+
+CLIENT_SECRET = ''
