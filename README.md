@@ -17,3 +17,6 @@ trakt.top.watched.list.py - Creates Trakt list from Trakts Top Watched Movies of
 	python trakt.pirated.list.py
   or
   python trakt.top.watched.list.py
+
+### Code
+Code used in these scripts are based on https://gitlab.com/tanel/trakt-torrentfreak-top-10/
