@@ -197,7 +197,9 @@ def main():
         
     # update list description
     put_oauth_request('users/me/lists/{0}'.format(list_id), data={
-        'description': 'Updated at ' + datetime.today().strftime('%Y-%m-%d')
+        'description': 'Updated at ' + datetime.today().strftime('%Y-%m-%d') + 
+        '\r\n\r\n' + 'Trakts The most watched movies for the last 7 days with additional filters: Year >= 2018, Rating >= 6, Votes >=200.' +
+        '\r\n' + 'Source code: https://github.com/linaspurinis/trakt.lists'
     })
     time.sleep(0.5) 
 
@@ -217,6 +219,7 @@ def main():
         already_added.remove(imdb)
     list_api_url_rm = 'users/me/lists/{0}/items/remove'.format(list_id)
     pprint(post_oauth_request(list_api_url_rm, data={'movies': post_data}).json())
+    db_set('already_added_watched', already_added)
 
     # add missing list to trakt from top watched list    
     post_data = []
