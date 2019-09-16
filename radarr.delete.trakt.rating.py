@@ -210,9 +210,7 @@ def main():
     for movie in radarrMovies.json():
         if movie['imdbId'] in trakt_bad_movies:
           print('Will delete {0}...'.format(movie['imdbId']))
-#         radarrMovies = radarrSession.delete('{0}/api/movie/{2}?apikey={1}&deleteFiles=true&addExclusion=true'.format(radarr_url, radarr_key, movie['id']))
-          print('{0}/api/movie/{2}?apikey={1}&deleteFiles=true&addExclusion=true'.format(radarr_url, radarr_key, movie['id']))
-
+          radarrMovies = radarrSession.delete('{0}/api/movie/{2}?apikey={1}&deleteFiles=true&addExclusion=true'.format(radarr_url, radarr_key, movie['id']))
 
 
 
