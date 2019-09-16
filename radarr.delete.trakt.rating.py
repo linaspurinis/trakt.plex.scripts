@@ -161,9 +161,9 @@ def put_oauth_request(path, data, *args, **kwargs):
 
 
 def get_rating_imdb_ids():
-    list_api_url_1 = 'users/linaspurinis/ratings/movies/1'
-    list_api_url_2 = 'users/linaspurinis/ratings/movies/2'
-    list_api_url_3 = 'users/linaspurinis/ratings/movies/3'
+    list_api_url_1 = 'users/me/ratings/movies/1'
+    list_api_url_2 = 'users/me/ratings/movies/2'
+    list_api_url_3 = 'users/me/ratings/movies/3'
     movies = set()
     req = get_oauth_request(list_api_url_1)
     for movie in req:
