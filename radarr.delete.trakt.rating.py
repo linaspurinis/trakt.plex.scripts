@@ -160,26 +160,6 @@ def put_oauth_request(path, data, *args, **kwargs):
     return req
 
 
-def get_list_id(name):
-    key = 'list-id:{0}'.format(name)
-    if key in localdb:
-        return localdb[key]
-    req = get_oauth_request('users/me/lists')
-    existing_lists = [x['name'] for x in req]
-    if name not in existing_lists:
-        post_oauth_request('users/me/lists', data={
-            'name': name,
-        })
-        time.sleep(0.5)
-        req = get_oauth_request('users/me/lists')
-    res = [x for x in req if x['name'] == name]
-    if not res:
-        raise Exception('Could not find the list "{0}" :('.format(name))
-    list_id = res[0]['ids']['trakt']
-    db_set(key, list_id)
-    return list_id
-
-
 def get_rating_imdb_ids():
     list_api_url_1 = 'users/linaspurinis/ratings/movies/1'
     req = get_oauth_request(list_api_url_1)
@@ -190,16 +170,13 @@ def get_rating_imdb_ids():
     return movies
 
 def main():
-    list_id = get_list_id(config.TRAKT_LIST_NAME_WATCHED)
-    list_api_url = 'users/me/lists/{0}/items'.format(list_id)
-
 
     # delete movies from radarr rated 1 in trakt
     trakt_bad_movies = get_rating_imdb_ids()
 
-    radarr_url = 'http://ds.purinis.lt:7878/'
-    radarr_key = 'a951f19595de4ea19270d1fca1682d10'
+    radarr_url = config.RADARR_URL
     radarrSession = requests.Session()
+    radarrSession = config.RADARR_SESSION
     radarrSession.trust_env = False
     radarrMovies = radarrSession.get('{0}/api/movie?apikey={1}'.format(radarr_url, radarr_key))
 
