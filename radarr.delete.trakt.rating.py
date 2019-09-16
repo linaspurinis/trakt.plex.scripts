@@ -209,7 +209,7 @@ def main():
 
     for movie in radarrMovies.json():
         if movie['imdbId'] in trakt_bad_movies:
-          print('Will delete {0}...'.movie['imdbId'])
+          print('Will delete {0}...'.format(movie['imdbId']))
 
 
 
