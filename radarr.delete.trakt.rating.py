@@ -175,8 +175,8 @@ def main():
     trakt_bad_movies = get_rating_imdb_ids()
 
     radarr_url = config.RADARR_URL
+    radarr_key = config.RADARR_SESSION
     radarrSession = requests.Session()
-    radarrSession = config.RADARR_SESSION
     radarrSession.trust_env = False
     radarrMovies = radarrSession.get('{0}/api/movie?apikey={1}'.format(radarr_url, radarr_key))
 
