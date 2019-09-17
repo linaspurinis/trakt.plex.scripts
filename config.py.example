@@ -11,6 +11,11 @@ VOTES = 100
 YEAR = 2018
 RATING = 7
 
+# Radarr config for deleting bad rated moview
+RADARR_URL = 'http://ds.purinis.lt:7878'
+RADARR_SESSION = 'a951f19595de4ea19270d1fca1682d10'
+TRAKT_BAD_RATING = 4
+
 # To acquire the values for following two variables, go to:
 #
 #   https://trakt.tv/oauth/applications/new
