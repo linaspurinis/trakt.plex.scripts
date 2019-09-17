@@ -4,6 +4,8 @@ trakt.pirated.list.py - Creates Trakt list from Torrentfreak Most pirated movies
 
 trakt.top.watched.list.py - Creates Trakt list from Trakts Top Watched Movies of The Week with additional filer by votes, rating and year (in config.py)
 
+radarr.delete.trakt.rating.py - Would delete movies from Radarr when you rate them low on trakt
+
 ### How to run it:
 
 1. Open config.py.example and follow the instructions there
