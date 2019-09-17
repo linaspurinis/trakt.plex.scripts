@@ -160,32 +160,27 @@ def put_oauth_request(path, data, *args, **kwargs):
     return req
 
 
-def get_rating_imdb_ids():
-    list_api_url_1 = 'users/me/ratings/movies/1'
-    list_api_url_2 = 'users/me/ratings/movies/2'
-    list_api_url_3 = 'users/me/ratings/movies/3'
+def get_rating_imdb_ids(rating):
     movies = set()
-    req = get_oauth_request(list_api_url_1)
-    for movie in req:
-        imdb = movie["movie"]["ids"]["imdb"]
-        movies.add(imdb)
-    req = get_oauth_request(list_api_url_2)
-    for movie in req:
-        imdb = movie["movie"]["ids"]["imdb"]
-        movies.add(imdb)
-    req = get_oauth_request(list_api_url_3)
-    for movie in req:
-        imdb = movie["movie"]["ids"]["imdb"]
-        movies.add(imdb)
+    i = 1
+    while i <= rating:
+        list_api_url = 'users/me/ratings/movies/{0}}'.format(i)
+        req = get_oauth_request(list_api_url)
+        for movie in req:
+            imdb = movie["movie"]["ids"]["imdb"]
+            movies.add(imdb)
+        i += 1
     return movies
 
 def main():
 
-    # delete movies from radarr rated 1 in trakt
-    trakt_bad_movies = get_rating_imdb_ids()
-
     radarr_url = config.RADARR_URL
     radarr_key = config.RADARR_SESSION
+    trakt_bad_rating = config.TRAKT_BAD_RATING
+
+    # delete movies from radarr rated 1 in trakt
+    trakt_bad_movies = get_rating_imdb_ids(trakt_bad_rating)
+    
     radarrSession = requests.Session()
     radarrSession.trust_env = False
     radarrMovies = radarrSession.get('{0}/api/movie?apikey={1}'.format(radarr_url, radarr_key))
