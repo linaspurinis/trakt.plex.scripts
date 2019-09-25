@@ -178,7 +178,7 @@ def get_radarr_collection():
       print('Radarr server error - response {}'.format(radarrMovies.status_code))
       sys.exit(0)
     for movie in radarrMovies.json():
-        if movie['downloaded'] = 'true':
+        if movie['downloaded']:
             radarr_movies.add(movie['imdbId'])
     return radarr_movies
 
