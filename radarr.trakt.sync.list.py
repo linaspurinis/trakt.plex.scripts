@@ -188,6 +188,7 @@ def get_trakt_collection(list_id):
 
 def get_radarr_collection():
     radarr_movies = set()
+    radarr_movies_all = set()
     radarr_url = config.RADARR_URL
     radarr_key = config.RADARR_SESSION
     radarrSession = requests.Session()
@@ -197,9 +198,10 @@ def get_radarr_collection():
       print('Radarr server error - response {}'.format(radarrMovies.status_code))
       sys.exit(0)
     for movie in radarrMovies.json():
+        radarr_movies_all.add(movie['imdbId'])
         if movie['downloaded']:
             radarr_movies.add(movie['imdbId'])
-    return radarr_movies
+    return radarr_movies, radarr_movies_all
 
 def main():
     list_id = get_list_id('My Collection')
@@ -209,8 +211,16 @@ def main():
     })
     time.sleep(0.5) 
 
-    radarr_collection = get_radarr_collection()
+    list_id_rw = get_list_id('Radarr Watchlist')
+    # update list description
+    put_oauth_request('users/me/lists/{0}'.format(list_id_rw), data={
+        'description': 'Updated at ' + datetime.today().strftime('%Y-%m-%d')
+    })
+    time.sleep(0.5) 
+
+    radarr_collection, radarr_collection_rw = get_radarr_collection()
     trakt_collection = get_trakt_collection(list_id)
+    trakt_collection_rw = get_trakt_collection(list_id_rw)
     
     post_data_add = []
     post_data_remove = []
@@ -229,6 +239,24 @@ def main():
         print('Movie in Trakt but not in Radarr. Will delete {0}...'.format(imdb))
         post_data_remove.append({'ids': {'imdb': '{0}'.format(imdb)}})
     pprint(post_oauth_request('users/me/lists/{0}/items/remove'.format(list_id), data={'movies': post_data_remove}).json())
+
+    post_data_add = []
+    post_data_remove = []
+
+    for imdb in radarr_collection_rw:
+        if imdb in trakt_collection_rw:
+            continue
+        print('Movie in Radarr but not in Trakt. Will add {0}...'.format(imdb))
+        post_data_add.append({'ids': {'imdb': '{0}'.format(imdb)}})    
+    pprint(post_oauth_request('users/me/lists/{0}/items'.format(list_id_rw), data={'movies': post_data_add}).json())
+
+
+    for imdb in trakt_collection_rw:
+        if imdb in radarr_collection_rw:
+            continue
+        print('Movie in Trakt but not in Radarr. Will delete {0}...'.format(imdb))
+        post_data_remove.append({'ids': {'imdb': '{0}'.format(imdb)}})
+    pprint(post_oauth_request('users/me/lists/{0}/items/remove'.format(list_id_rw), data={'movies': post_data_remove}).json())
 
 if __name__ == '__main__':
     main()
