@@ -1,0 +1,4 @@
+export mpath="/Movies/";
+export pms="/plex/"; \
+export ytapi="xxxxxxxxxxxxxxxx"; \
+export extras=0; \
