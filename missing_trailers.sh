@@ -22,7 +22,7 @@ function dirhash_from_guid() {
 
 function imdb_xml_from_guid() {
  # Download only if no Extras file present (or extras = 1)
- if [ ! -f "${pms}Metadata/Movies/$(dirhash_from_guid "$1").bundle/Contents/com.plexapp.agents.imdb/extras.xml" ] or [ ${extras} -eq 1 ]; then
+ if [ ! -f "${pms}Metadata/Movies/$(dirhash_from_guid "$1").bundle/Contents/com.plexapp.agents.imdb/extras.xml" ] || [ ${extras} -eq 1 ]; then
    cat "${pms}Metadata/Movies/$(dirhash_from_guid "$1").bundle/Contents/com.plexapp.agents.imdb/Info.xml";
  fi
 }
@@ -59,7 +59,7 @@ for filename in $files; do
     imdbi="$(imdb_from_guid "${guid}")";
     #echo "Got IMDB ID ${imdbi}"
     [ -z "${imdbi}" ] && continue
-    echo "No extras.xml found, will download the trailer..."
+    echo "No extras.xml found, will download the trailer for ${mfulltitle}..."
     imdbv="$(videos_from_yt_search "${mfulltitle}")";
     #echo "$imdbv"
     IFS=$'\n' imdbvs=($imdbv)
