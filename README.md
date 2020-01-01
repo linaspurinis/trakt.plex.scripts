@@ -29,3 +29,5 @@ in plex, grabs the imdb id from plex, and then parses the trailer url from youtu
 that to youtube-dl to download the trailer, it skips entries if the trailer already exists
 must have 'sqlite', 'youtube-dl' and 'bash' packages installed.
 set 'mpath' and 'pms' accordingly in missing_trailers.cfg
+
+Code based on https://forums.plex.tv/t/auto-download-missing-trailers-from-idmb-for-all-movies-in-collection/77026
