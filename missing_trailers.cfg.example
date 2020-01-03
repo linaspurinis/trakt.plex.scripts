@@ -6,4 +6,4 @@
 export mpath="/Movies/";
 export pms="/plex/"; \
 export ytapi="xxxxxxxxxxxxxxxx"; \
-export extras=0; \
+export extras=0;
