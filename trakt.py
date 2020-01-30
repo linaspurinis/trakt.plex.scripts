@@ -7,8 +7,6 @@ import os
 import re
 import sys
 import time
-from pprint import pprint
-from datetime import datetime
 
 import requests
 
@@ -19,23 +17,14 @@ except ImportError:
            'values and rename it to config.py'))
     sys.exit(1)
 
+APIURL = 'https://api.trakt.tv'
 HERE = os.path.abspath(os.path.dirname(__file__))
 CACHEFILE = os.path.join(HERE, '.local.db')
-APIURL = 'https://api.trakt.tv'
-FEED_URL = 'http://torrentfreak.com/category/dvdrip/feed/'
-
 
 localdb = {}
 if os.path.exists(CACHEFILE):
     with open(CACHEFILE, 'r') as fp:
         localdb = json.load(fp)
-
-
-def db_set(key, value):
-    localdb[key] = value
-    with open(CACHEFILE, 'w') as fp:
-        json.dump(localdb, fp, indent=2, sort_keys=True)
-
 
 def get_oauth_headers():
     headers = {
@@ -180,62 +169,3 @@ def get_list_id(name):
     db_set(key, list_id)   
     return list_id
 
-
-def get_pirated_ids():
-    rss = requests.get(FEED_URL).text
-    #we split the first top10 from the rest rss feed
-    rss = rss.split('</table>',1)[0]
-    pirated_movies = []
-    for imdbid in re.findall('tt(\d{7,8})', rss)[::-1]:
-        if 'tt'+imdbid not in pirated_movies:
-            #yield imdbid
-            pirated_movies.append('tt'+imdbid)
-            print(imdbid)
-    pirated_movies.reverse()
-    return pirated_movies
-
-def get_trakt_ids(list_id):
-    req = get_oauth_request('users/me/lists/{0}/items'.format(list_id))
-    trakt_movies = set()
-    for movie in req:
-        imdb = movie["movie"]["ids"]["imdb"]
-        trakt_movies.add(imdb)
-    return trakt_movies
-
-def main():
-    list_id = get_list_id(config.TRAKT_LIST_NAME)
-    list_api_url = 'users/me/lists/{0}/items'.format(list_id)
-
-    # update list description
-    put_oauth_request('users/me/lists/{0}'.format(list_id), data={
-        'description': 'Updated at ' + datetime.today().strftime('%Y-%m-%d') + 
-        '\r\n\r\n' + 'feed:https://torrentfreak.com/category/dvdrip/feed/' +
-        '\r\n' + 'Source code: https://github.com/linaspurinis/trakt.lists'
-    })
-    time.sleep(0.5) 
-
-    print('List URL - https://trakt.tv/users/me/lists/{0}'.format(list_id))
-    print('')
-    
-    # delete movies from trakt list no longer in pirated list   
-    trakt_list = get_trakt_ids(list_id)
-    pirated_list = get_pirated_ids()
-    post_data = []
-
-    for imdb in trakt_list:
-        print('Will delete {0}...'.format(imdb))
-        post_data.append({'ids': {'imdb': '{0}'.format(imdb)}}) 
-    list_api_url_rm = 'users/me/lists/{0}/items/remove'.format(list_id)
-    pprint(post_oauth_request(list_api_url_rm, data={'movies': post_data}).json())
-
-    # add missing list to trakt from pirated list   
-    post_data = []
-
-    for imdb in pirated_list:
-        print('Will add {0}...'.format(imdb))
-        post_data.append({'ids': {'imdb': '{0}'.format(imdb)}})
-    pprint(post_oauth_request(list_api_url, data={'movies': post_data}).json())
-
-
-if __name__ == '__main__':
-    main()

@@ -12,6 +12,9 @@ from datetime import datetime
 
 import requests
 
+import urllib.request
+from bs4 import BeautifulSoup
+
 try:
     import config
 except ImportError:
@@ -22,7 +25,7 @@ except ImportError:
 HERE = os.path.abspath(os.path.dirname(__file__))
 CACHEFILE = os.path.join(HERE, '.local.db')
 APIURL = 'https://api.trakt.tv'
-FEED_URL = 'http://torrentfreak.com/category/dvdrip/feed/'
+IMDB_URL = 'https://www.imdb.com/chart/moviemeter/'
 
 
 localdb = {}
@@ -181,18 +184,14 @@ def get_list_id(name):
     return list_id
 
 
-def get_pirated_ids():
-    rss = requests.get(FEED_URL).text
-    #we split the first top10 from the rest rss feed
-    rss = rss.split('</table>',1)[0]
-    pirated_movies = []
-    for imdbid in re.findall('tt(\d{7,8})', rss)[::-1]:
-        if 'tt'+imdbid not in pirated_movies:
-            #yield imdbid
-            pirated_movies.append('tt'+imdbid)
-            print(imdbid)
-    pirated_movies.reverse()
-    return pirated_movies
+def get_moviemeter_ids():
+    response = requests.get(IMDB_URL)
+    soup = BeautifulSoup(response.text, "html.parser")
+    moviemeter_movies = []
+    for link in soup.find_all('div', {'data-recordmetrics': 'true'}):
+        moviemeter_movies.append(link.get('data-tconst'))
+    return moviemeter_movies
+
 
 def get_trakt_ids(list_id):
     req = get_oauth_request('users/me/lists/{0}/items'.format(list_id))
@@ -203,23 +202,25 @@ def get_trakt_ids(list_id):
     return trakt_movies
 
 def main():
-    list_id = get_list_id(config.TRAKT_LIST_NAME)
+    list_id = get_list_id(config.TRAKT_LIST_MOVIEMETER_NAME)
     list_api_url = 'users/me/lists/{0}/items'.format(list_id)
 
     # update list description
     put_oauth_request('users/me/lists/{0}'.format(list_id), data={
-        'description': 'Updated at ' + datetime.today().strftime('%Y-%m-%d') + 
-        '\r\n\r\n' + 'feed:https://torrentfreak.com/category/dvdrip/feed/' +
-        '\r\n' + 'Source code: https://github.com/linaspurinis/trakt.lists'
+        'description': \
+        'IMDb Most Popular Movies top 100' +
+        '\r\n\r\n' + 'URL: https://www.imdb.com/chart/moviemeter/' +
+        '\r\n' + 'Source code: https://github.com/linaspurinis/trakt.lists/' +
+        '\r\n\r\nUpdated at ' + datetime.today().strftime('%Y-%m-%d')
     })
     time.sleep(0.5) 
 
     print('List URL - https://trakt.tv/users/me/lists/{0}'.format(list_id))
     print('')
     
-    # delete movies from trakt list no longer in pirated list   
+    # delete movies trakt list   
     trakt_list = get_trakt_ids(list_id)
-    pirated_list = get_pirated_ids()
+    moviemeter_list = get_moviemeter_ids()
     post_data = []
 
     for imdb in trakt_list:
@@ -231,7 +232,7 @@ def main():
     # add missing list to trakt from pirated list   
     post_data = []
 
-    for imdb in pirated_list:
+    for imdb in moviemeter_list:
         print('Will add {0}...'.format(imdb))
         post_data.append({'ids': {'imdb': '{0}'.format(imdb)}})
     pprint(post_oauth_request(list_api_url, data={'movies': post_data}).json())

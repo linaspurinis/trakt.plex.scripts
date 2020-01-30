@@ -20,7 +20,7 @@ except ImportError:
     print(('Please see config.py.example, update the '
            'values and rename it to config.py'))
     sys.exit(1)
-    
+
 movieinfo.OMDB_APIKEY = config.OMDB_APIKEY
 
 def get_trakt_ids(list_id):
@@ -31,10 +31,8 @@ def get_trakt_ids(list_id):
         trakt_movies.append(imdb)
     return trakt_movies
 
-def get_filtered_ids():
-    list_api_url_1 = 'movies/watched/weekly?limit=100'
-    req = trakt.get_oauth_request(list_api_url_1)
-    # ignored config params config.VOTES config.YEAR config.RATING
+def get_trakt_filtered_ids(list_id):
+    req = trakt.get_oauth_request('users/me/lists/{0}/items'.format(list_id))
     trakt_movies = []
     for trakt_movie in req:
         #get movie ratings
@@ -58,39 +56,36 @@ def get_filtered_ids():
     return trakt_movies
 
 def main():
-    list_id = trakt.get_list_id(config.TRAKT_LIST_NAME_WATCHED)
-    list_api_url = 'users/me/lists/{0}/items'.format(list_id)
+    list_moviemeter_id = trakt.get_list_id(config.TRAKT_LIST_MOVIEMETER_NAME)
+    list_filtered_id = trakt.get_list_id(config.TRAKT_LIST_MOVIEMETER_FILTERED)
+    list_filtered_url = 'users/me/lists/{0}/items'.format(list_filtered_id)
+    list_filtered_url_rm = 'users/me/lists/{0}/items/remove'.format(list_filtered_id)
         
     # update list description
-    trakt.put_oauth_request('users/me/lists/{0}'.format(list_id), data={
-        'description': 'Updated at ' + datetime.today().strftime('%Y-%m-%d') + 
-        '\r\nTrakts The most watched movies for the last 7 days with filters:'+
-        '\r\nReleased in last 2 years, imdbRating >= 6, imdbVotes >= 5000, Metacritics >= 50, Rotten >= 50' +
-        '\r\nSource code: https://github.com/linaspurinis/trakt.lists'
+    trakt.put_oauth_request('users/me/lists/{0}'.format(list_filtered_id), data={
+        'description': 'Updated at ' + datetime.today().strftime('%Y-%m-%d') +
+        '\nIMDb Moviemeter Top 100 with filters:' +
+        '\nReleased in last 2 years, imdbRating >= 6, imdbVotes >= 5000, Metacritics >= 50, Rotten >= 50'
     })
     time.sleep(0.5) 
 
-    print('List URL - https://trakt.tv/users/me/lists/{0}'.format(list_id))
-    print('')
-    
     # delete movies from trakt list no longer in top watched list   
     post_data = []
-    trakt_topwatched_list = get_filtered_ids()
-    trakt_filtered_list = get_trakt_ids(list_id)
+    trakt_moviemeter_list = get_trakt_filtered_ids(list_moviemeter_id)
+    trakt_filtered_list = get_trakt_ids(list_filtered_id)
 
     for imdb in trakt_filtered_list:
         #print('Will delete {0}...'.format(imdb))
         post_data.append({'ids': {'imdb': '{0}'.format(imdb)}}) 
-    list_api_url_rm = 'users/me/lists/{0}/items/remove'.format(list_id)
-    pprint(trakt.post_oauth_request(list_api_url_rm, data={'movies': post_data}).json())
+    pprint(trakt.post_oauth_request(list_filtered_url_rm, data={'movies': post_data}).json())
 
     # add missing list to trakt from top watched list    
     post_data = []
-    for imdb in trakt_topwatched_list:    
+    for imdb in trakt_moviemeter_list:    
         print('Will add {0}...'.format(imdb))
         post_data.append({'ids': {'imdb': '{0}'.format(imdb)}})
-    pprint(trakt.post_oauth_request(list_api_url, data={'movies': post_data}).json())
-
+    pprint(trakt.post_oauth_request(list_filtered_url, data={'movies': post_data}).json())
+    
     movieinfo.save_local_db()
 
 if __name__ == '__main__':

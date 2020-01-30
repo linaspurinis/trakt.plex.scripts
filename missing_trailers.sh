@@ -60,6 +60,17 @@ for filename in $files; do
     #echo "Got IMDB ID ${imdbi}"
     [ -z "${imdbi}" ] && continue
     echo "No extras.xml found, will download the trailer for ${mfulltitle}..."
+    url_from_trailers_hd=`python /home/trakt-list/trailer_url.py "${sqlarray[0]}"`
+    #echo ${url_from_trailers_hd}
+    if [ ${url_from_trailers_hd} == "None" ]; then
+      echo "Trailers-HD none..."
+    else
+      youtube-dl -o "${mname}-trailer.%(ext)s" "${url_from_trailers_hd}";
+      if [ $? -eq 0 ]; then
+        echo "youtube-dl from HD-trailers success"
+        continue
+      fi
+    fi
     imdbv="$(videos_from_yt_search "${mfulltitle}")";
     #echo "$imdbv"
     IFS=$'\n' imdbvs=($imdbv)
@@ -67,8 +78,8 @@ for filename in $files; do
     do
         youtubeurl="https://www.youtube.com/watch?v=${imdbvs[$i]}"
         echo "Got Youtube URL ${youtubeurl}"
-        echo "youtube-dl -o \"${mname}-trailer.%(ext)s\" \"${youtubeurl}\"";
-        youtube-dl -o "${mname}-trailer.%(ext)s" "${youtubeurl}";
+        echo "youtube-dl --proxy \"192.168.1.182:8080\" -o \"${mname}-trailer.%(ext)s\" \"${youtubeurl}\"";
+        youtube-dl --proxy "192.168.1.182:8080" -o "${mname}-trailer.%(ext)s" "${youtubeurl}";
         if [ $? -eq 0 ]; then
           echo "youtube-dl success"
           break
@@ -77,4 +88,6 @@ for filename in $files; do
 
   fi;
 done;
+
+echo Done...
 
