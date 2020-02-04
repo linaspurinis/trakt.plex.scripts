@@ -224,7 +224,7 @@ def main():
     post_data = []
 
     for imdb in trakt_list:
-        print('Will delete {0}...'.format(imdb))
+        #print('Will delete {0}...'.format(imdb))
         post_data.append({'ids': {'imdb': '{0}'.format(imdb)}}) 
     list_api_url_rm = 'users/me/lists/{0}/items/remove'.format(list_id)
     pprint(post_oauth_request(list_api_url_rm, data={'movies': post_data}).json())

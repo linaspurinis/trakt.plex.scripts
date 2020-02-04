@@ -5,16 +5,22 @@
 # not exist with given name
 TRAKT_LIST_NAME = 'Top 10 Pirated Movies of The Week'
 TRAKT_LIST_NAME_WATCHED = 'Top Watched Movies of The Week'
+TRAKT_LIST_NAME_WATCHED_KIDS = 'Top Watched Movies of The Week for KiDS'
+TRAKT_LIST_MOVIEMETER_NAME = 'IMDb Moviemeter (Top 100)'
+TRAKT_LIST_MOVIEMETER_FILTERED = 'IMDb Moviemeter'
 
-# List search tags >= (more or equal)
-VOTES = 100
+#OMDB API KEY
+OMDB_APIKEY = ''
+
+# List search tags > (more than)
+VOTES = 200
 YEAR = 2018
-RATING = 7
+RATING = 6
 
-# Radarr config for deleting bad rated moview
-RADARR_URL = 'http://url'
-RADARR_SESSION = 'apikey'
-TRAKT_BAD_RATING = 4
+#Radarr
+RADARR_URL = 'http://servername:7878'
+RADARR_SESSION = ''
+TRAKT_BAD_RATING = 5
 
 # To acquire the values for following two variables, go to:
 #
@@ -27,5 +33,4 @@ TRAKT_BAD_RATING = 4
 # below.
 
 CLIENT_ID = ''
-
 CLIENT_SECRET = ''
