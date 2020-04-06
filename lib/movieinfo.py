@@ -28,11 +28,13 @@ def omdbapi_get_info(imdbid):
   for rating in ratings:
     if rating['Source'] == 'Rotten Tomatoes':
       local_ratings[imdbid]['rottRating'] = int(rating['Value'].replace("%",""))
+
   try:
     local_ratings[imdbid]['imdbRating'] = float(data['imdbRating'])
     local_ratings[imdbid]['imdbVotes'] = int(data['imdbVotes'].replace(",",""))
   except ValueError:
     pass
+
   try:
     # Trying directly from IMDB
     IMDB_URL = 'https://www.imdb.com/title/'+imdbid+'/'
@@ -42,12 +44,21 @@ def omdbapi_get_info(imdbid):
     local_ratings[imdbid]['imdbVotes'] = int(soup.find(itemprop="ratingCount").get_text().replace(",",""))
   except:
     pass
+
   try:
     local_ratings[imdbid]['metaRating'] = int(data['Metascore'])
   except ValueError:
     pass
-  return
 
+  try:
+    local_ratings[imdbid]['Bollywood'] = 0
+    if data['Language'] == 'Hindi' and data['Country'] == 'India':
+      local_ratings[imdbid]['Bollywood'] = 1
+  except ValueError:
+    pass
+
+  return
+ 
 def movie_get_info(imdbid):
     if not local_ratings.get(imdbid):
         print('Not found, getting movie info for: {}'.format(imdbid))

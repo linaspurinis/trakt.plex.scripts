@@ -41,6 +41,10 @@ def get_trakt_filtered_ids(list_id):
         if not movieinfo.local_ratings[imdb].get('imdbRating'):
             print('No iMDB rating, ignoring:'+imdb)
             continue
+        if movieinfo.local_ratings[imdb].get('Bollywood'):
+            bollywood = movieinfo.local_ratings[imdb]['Bollywood']
+        else:
+            bollywood = 0
         if movieinfo.local_ratings[imdb].get('metaRating'):
             metaRating = movieinfo.local_ratings[imdb]['metaRating']
         else:
@@ -49,7 +53,8 @@ def get_trakt_filtered_ids(list_id):
             rottRating = movieinfo.local_ratings[imdb]['rottRating']
         else:
             rottRating = 100
-        if (movieinfo.local_ratings[imdb]['year'] > (datetime.today().year - 2) and movieinfo.local_ratings[imdb]['imdbRating'] >= 6 and movieinfo.local_ratings[imdb]['imdbVotes'] >= 5000 and metaRating >= 50 and rottRating >= 50):
+        if (movieinfo.local_ratings[imdb]['year'] > (datetime.today().year - 2) and movieinfo.local_ratings[imdb]['imdbRating'] >= 6 and movieinfo.local_ratings[imdb]['imdbVotes'] >= 5000 \
+            and metaRating >= 50 and rottRating >= 50 and bollywood == 0):
            trakt_movies.append(imdb)
         else:
             print('Not good... Ignoring: '+imdb)
