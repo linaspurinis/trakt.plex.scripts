@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 OMDB_APIKEY = 'NoNe'
 
 HERE = os.path.abspath(os.path.dirname(__file__))
-RATINGSFILE = os.path.join(HERE, '.ratings.db')
+RATINGSFILE = os.path.join(HERE, '../.ratings.db')
 local_ratings = {}
 if os.path.exists(RATINGSFILE):
   with open(RATINGSFILE, 'r') as fp:

@@ -9,10 +9,10 @@ import sys
 import time
 from pprint import pprint
 from datetime import datetime
-
 import requests
-import movieinfo
-import trakt
+
+from lib import movieinfo
+from lib import trakt
 
 try:
     import config

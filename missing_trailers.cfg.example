@@ -1,9 +1,0 @@
-# mpath - folder to your media movies library
-# pms   - Plex Media Server data directory: https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/
-# ytapi - YouTube API: https://developers.google.com/youtube/v3
-# extras - If you have PlexPass and want to download only missing trailers, leave 0, if you want to download trailer for every movie, change to 1
-
-export mpath="/Movies/";
-export pms="/plex/"; \
-export ytapi="xxxxxxxxxxxxxxxx"; \
-export extras=0;

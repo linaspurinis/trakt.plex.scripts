@@ -19,7 +19,7 @@ except ImportError:
 
 APIURL = 'https://api.trakt.tv'
 HERE = os.path.abspath(os.path.dirname(__file__))
-CACHEFILE = os.path.join(HERE, '.local.db')
+CACHEFILE = os.path.join(HERE, '../.local.db')
 
 localdb = {}
 if os.path.exists(CACHEFILE):
