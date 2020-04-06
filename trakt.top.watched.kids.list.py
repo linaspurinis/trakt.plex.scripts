@@ -54,7 +54,7 @@ def get_imdb_ids():
     else:
       rottRating = 100
 
-    if (movieinfo.local_ratings[imdb]['imdbRating'] >= 6 and movieinfo.local_ratings[imdb]['imdbVotes'] >= 5000 and metaRating >= 50 and rottRating >= 50):
+    if (movieinfo.local_ratings[imdb]['imdbRating'] >= 6 and movieinfo.local_ratings[imdb]['imdbVotes'] >= 5000 and metaRating >= 45 and rottRating >= 45):
       movies.append(imdb)
     else:
       print('Not good... Ignoring: '+imdb)

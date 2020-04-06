@@ -69,7 +69,7 @@ def main():
         rottRating = movieinfo.local_ratings[imdb]['rottRating']
       else:
         rottRating = 0
-      if (movieinfo.local_ratings[imdb]['imdbRating'] < 6 and movieinfo.local_ratings[imdb]['imdbVotes'] < 5000 and metaRating < 50 and rottRating < 50):
+      if (movieinfo.local_ratings[imdb]['imdbRating'] < 6 and metaRating < 50 and rottRating < 50):
           print("==================  bad movie found... {}  =================".format(imdb))
           bad_ids.append(imdb)
 

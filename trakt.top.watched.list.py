@@ -39,6 +39,9 @@ def get_filtered_ids():
     for trakt_movie in req:
         #get movie ratings
         imdb = trakt_movie["movie"]["ids"]["imdb"]
+        if not imdb:
+            # Sometimes Trakt does not have imdbid for some movies
+            continue
         movieinfo.movie_get_info(imdb)
         if not movieinfo.local_ratings[imdb].get('imdbRating'):
             print('No iMDB rating, ignoring:'+imdb)

@@ -26,6 +26,11 @@ if os.path.exists(CACHEFILE):
     with open(CACHEFILE, 'r') as fp:
         localdb = json.load(fp)
 
+def db_set(key, value):
+    localdb[key] = value
+    with open(CACHEFILE, 'w') as fp:
+        json.dump(localdb, fp, indent=2, sort_keys=True)
+
 def get_oauth_headers():
     headers = {
         'Content-type': 'application/json',

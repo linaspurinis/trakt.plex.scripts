@@ -50,7 +50,7 @@ def omdbapi_get_info(imdbid):
 
 def movie_get_info(imdbid):
     if not local_ratings.get(imdbid):
-        print('Not found, getting movie info for: '+imdbid)
+        print('Not found, getting movie info for: {}'.format(imdbid))
         omdbapi_get_info(imdbid)
     else:
         if ((int(round(time.time() * 1000)) - local_ratings[imdbid]['updated']) / 1000) > (86400 * (5+random.randint(0,10))):
