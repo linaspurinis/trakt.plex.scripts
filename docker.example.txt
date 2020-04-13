@@ -1,0 +1,37 @@
+docker-compose.yml
+
+version: '3'
+services:
+    trakt-list:
+        container_name: trakt-list
+        volumes:
+           - '/volume1/docker/trakt-list:/home/trakt-list'
+        build: ./trakt-list
+        image: 'trakt-list'
+        environment:
+           - PUID=1026
+           - PGID=100
+           - TZ=Europe/Vilnius
+        restart: unless-stopped
+
+Dockerfile
+
+FROM     python:alpine
+
+WORKDIR  /home/trakt-list
+VOLUME   /home/trakt-list
+
+RUN     pip install requests plexapi
+RUN     apk update \
+        && apk add gcc musl-dev  sqlite youtube-dl curl bash
+
+COPY    requirements.txt /home/trakt-list
+RUN     pip install -r requirements.txt
+
+COPY    trakt-cron /home/trakt-list
+RUN     chmod 0644 /home/trakt-list/trakt-cron
+RUN     crontab /home/trakt-list/trakt-cron
+RUN     touch /var/log/cron.log
+
+# Running crond
+CMD      crond -l 2 && tail -f /var/log/cron.log
