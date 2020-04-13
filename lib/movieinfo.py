@@ -21,6 +21,9 @@ def omdbapi_get_info(imdbid):
   omdb_url = "http://www.omdbapi.com/?i={}&apikey={}".format(imdbid, OMDB_APIKEY)
   request = requests.get(omdb_url)
   data = request.json()
+  if data['Response'] == 'False':
+      print('OMDB returned error...')
+      return
   local_ratings[imdbid] = {'year': int(data['Year']), 
                            'updated': int(round(time.time() * 1000))
                            }
