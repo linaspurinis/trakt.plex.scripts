@@ -76,6 +76,5 @@ def main():
         post_data.append({'ids': {'imdb': '{0}'.format(imdb)}})
     pprint(trakt.post_oauth_request(list_api_url, data={'movies': post_data}).json())
 
-
 if __name__ == '__main__':
     main()
