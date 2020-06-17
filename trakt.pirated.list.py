@@ -20,7 +20,8 @@ except ImportError:
            'values and rename it to config.py'))
     sys.exit(1)
 
-FEED_URL = 'http://torrentfreak.com/category/dvdrip/feed/'
+#FEED_URL = 'http://torrentfreak.com/category/dvdrip/feed/'
+FEED_URL = 'https://torrentfreak.com/top-10-most-torrented-pirated-movies/'
 
 def get_pirated_ids():
     rss = requests.get(FEED_URL).text
@@ -28,10 +29,10 @@ def get_pirated_ids():
     rss = rss.split('</table>',1)[0]
     pirated_movies = []
     for imdbid in re.findall('tt(\d{7,8})', rss)[::-1]:
+        print(imdbid)
         if 'tt'+imdbid not in pirated_movies:
             #yield imdbid
             pirated_movies.append('tt'+imdbid)
-            #print(imdbid)
     pirated_movies.reverse()
     return pirated_movies
 
@@ -50,7 +51,7 @@ def main():
     # update list description
     trakt.put_oauth_request('users/me/lists/{0}'.format(list_id), data={
         'description': 'Updated at ' + datetime.today().strftime('%Y-%m-%d') + 
-        '\r\n\r\n' + 'feed:https://torrentfreak.com/category/dvdrip/feed/' +
+        '\r\n\r\n' + FEED_URL +
         '\r\n' + 'Source code: https://github.com/linaspurinis/trakt.lists'
     })
     time.sleep(0.5) 
