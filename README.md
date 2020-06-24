@@ -1,3 +1,7 @@
+# https://mdblist.com/ replaces the trakt.lists scripts!
+Create lists with advanced filtering options like IMDb, Trakt, TMDb, Letterboxd, Tomatoes, Audience, Metacritics ratings/votes, genres, certification and much more!
+
+
 ## trakt.lists
 
 trakt.pirated.list.py - Creates Trakt list from Torrentfreak Most pirated movies of the week feed: http://torrentfreak.com/category/dvdrip/feed/
